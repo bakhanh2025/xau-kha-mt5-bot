@@ -11,6 +11,7 @@ input int BUF_SL_PIP = 200;           // SL/TP by pip (1 pip = 0.01)
 input int MAX_SLTP_PIP = 1000;        // SL/TP by pip (1 pip = 0.01)
 input string SYMBOL = "XAUUSD";
 input double PRICE_BETWEEN_OC = 3;
+input bool IS_SEND_TELEGRAM=true;
 
 double pip_value = 0.01;
 double sltp_value       = SLTP_USD_Base; // volume cơ bản
@@ -290,6 +291,8 @@ string FormatProfitMessage(string type, double profit)
 
 void SendTelegramMessage(string message)
 {
+   if(!IS_SEND_TELEGRAM) return;
+   
    string encodedMessage = message;
    StringReplace(encodedMessage, " ", "%20");
    StringReplace(encodedMessage, "!", "%21");
