@@ -11,7 +11,7 @@ input int BUF_SL_PIP          = 200;           // SL/TP by pip (1 pip = 0.01)
 input int MAX_SLTP_PIP        = 1000;        // SL/TP by pip (1 pip = 0.01)
 input string SYMBOL           = "XAUUSDm";
 input double PRICE_BETWEEN_OC = 3;
-input bool IS_SEND_TELEGRAM   =false;
+input bool IS_SEND_TELEGRAM   = false;
 
 double pip_value              = 0.01;
 double sltp_value             = SLTP_USD_Base; // volume cơ bản
@@ -244,27 +244,24 @@ void OnTradeTransaction(const MqlTradeTransaction &trans,
                         const MqlTradeRequest &request,
                         const MqlTradeResult &result)
 {
-   if(trans.type == TRADE_TRANSACTION_DEAL_ADD)
-   {
+   if(trans.type == TRADE_TRANSACTION_DEAL_ADD) {
+      if(!HistoryDealSelect(trans.deal)) return;
+      
       double profit = HistoryDealGetDouble(trans.deal, DEAL_PROFIT);
       string symbol = trans.symbol;
-
+      
       if(profit > 0) {
+         sltp_value += TP_USD_Increase;
+         
          string msg = FormatProfitMessage("WIN", profit);
+         Print("Send profit message: " + msg);
          SendTelegramMessage(msg);
       }
       else if(profit < 0) {
-         string msg = FormatProfitMessage("LOST", profit);
-         SendTelegramMessage(msg);
-      }
-      
-      if(profit > 0)
-      {
-         sltp_value += TP_USD_Increase;
-      }
-      else
-      {
          sltp_value = SLTP_USD_Base;
+         string msg = FormatProfitMessage("LOST", profit);
+         Print("Send profit message: " + msg);
+         SendTelegramMessage(msg);
       }
    }
 }
