@@ -5,17 +5,17 @@
 #include <Trade\Trade.mqh>
 CTrade trade;
 
-input double SLTP_USD_Base = 30;      // Origin volume
-input double TP_USD_Increase = 10;    // Increase volume
-input int BUF_SL_PIP = 200;           // SL/TP by pip (1 pip = 0.01)
-input int MAX_SLTP_PIP = 1000;        // SL/TP by pip (1 pip = 0.01)
-input string SYMBOL = "XAUUSD";
+input double SLTP_USD_Base    = 30;      // Origin volume
+input double TP_USD_Increase  = 10;    // Increase volume
+input int BUF_SL_PIP          = 200;           // SL/TP by pip (1 pip = 0.01)
+input int MAX_SLTP_PIP        = 1000;        // SL/TP by pip (1 pip = 0.01)
+input string SYMBOL           = "XAUUSDm";
 input double PRICE_BETWEEN_OC = 3;
-input bool IS_SEND_TELEGRAM=true;
+input bool IS_SEND_TELEGRAM   =false;
 
-double pip_value = 0.01;
-double sltp_value       = SLTP_USD_Base; // volume cơ bản
-string telegramUrl = "https://script.google.com/macros/s/AKfycbxQdMRbz4ZS8ja_sbGwk6pZRuLocyLuZ4rinLEFk5SMpG6Q4WgfARaXdpYi0ij6SWTT/exec";
+double pip_value              = 0.01;
+double sltp_value             = SLTP_USD_Base; // volume cơ bản
+string telegramUrl            = "https://script.google.com/macros/s/AKfycbxQdMRbz4ZS8ja_sbGwk6pZRuLocyLuZ4rinLEFk5SMpG6Q4WgfARaXdpYi0ij6SWTT/exec";
    
 //+------------------------------------------------------------------+
 int OnInit()
