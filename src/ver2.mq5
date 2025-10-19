@@ -194,14 +194,14 @@ void CheckCloseByTime()
    {
       datetime open_time = (datetime)PositionGetInteger(POSITION_TIME);
       MqlDateTime dtOpen; TimeToStruct(open_time, dtOpen);
-      MqlDateTime dtNow; TimeToStruct(TimeCurrent(), dtNow);
+      MqlDateTime dtNow; TimeToStruct(TimeVietNamAuto(), dtNow);
       
       int session = GetSessionFromTime(dtOpen.hour, dtOpen.min);
       if(session == 0) return; // unknown session
 
       // compute forced close datetime
       datetime forcedClose = 0;
-      datetime now = TimeCurrent();
+      datetime now = TimeVietNamAuto();
       MqlDateTime fc; TimeToStruct(now, fc); // base on today, adjust if needed
 
       if(session == 1) { // Asian: forced close 12:45 same day
@@ -216,7 +216,7 @@ void CheckCloseByTime()
          forcedClose = base + 24*3600 + 45*60; // next day 00:45
       }
 
-      if(TimeCurrent() >= forcedClose)
+      if(TimeVietNamAuto() >= forcedClose)
       {
          double vol = PositionGetDouble(POSITION_VOLUME);
          ulong ticket = PositionGetInteger(POSITION_TICKET);
@@ -227,14 +227,14 @@ void CheckCloseByTime()
          else
             closed = trade.PositionClose(ticket);
 
-         if(closed) Print("Position closed by forced session close at ", TimeToString(TimeCurrent()));
+         if(closed) Print("Position closed by forced session close at ", TimeToString(TimeVietNamAuto()));
       }
    }
 }
 
 bool IsEntryAllowed()
 {
-   MqlDateTime dt; TimeToStruct(TimeCurrent(), dt);
+   MqlDateTime dt; TimeToStruct(TimeVietNamAuto(), dt);
    if(dt.hour >=1 && dt.hour <7) return false;
    if(GetSessionFromTime(dt.hour, dt.min) != 0) return true;
    return false;
@@ -323,4 +323,17 @@ string GetFormattedAccountInfo()
 {
    long id = AccountInfoInteger(ACCOUNT_LOGIN);
    return "Account " + IntegerToString(id) + ": ";
+}
+
+int GetServerGMTOffset()
+{
+   datetime utc = TimeGMT();
+   datetime server = TimeTradeServer();
+   return (int)((server - utc) / 3600);
+}
+
+datetime TimeVietNamAuto()
+{
+   int diff = 7 - GetServerGMTOffset();
+   return TimeTradeServer() + diff * 3600;
 }
