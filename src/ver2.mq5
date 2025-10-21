@@ -90,6 +90,13 @@ void OnTimer()
       sl_price = GetSLPrice(SYMBOL, "buy", price);
       tp_price = GetTPPrice(SYMBOL, "buy", price, sl_price);
       double volume = CalculateLotFromUSD(sltp_value);
+      if (sl_price >= price || tp_price <= price) {
+         Print("❌ BUY invalid SL/TP direction");
+         return;
+      }
+      PrintFormat("BUY debug: price=%.2f sl=%.2f tp=%.2f minStop=%.2f",
+            price, sl_price, tp_price, SymbolInfoInteger(SYMBOL, SYMBOL_TRADE_STOPS_LEVEL) * _Point);
+
       trade.SetDeviationInPoints(30);
       trade.Buy(volume, SYMBOL, price, sl_price, tp_price, "AutoBuy");
       
@@ -100,6 +107,13 @@ void OnTimer()
       sl_price = GetSLPrice(SYMBOL, "sell", price);
       tp_price = GetTPPrice(SYMBOL, "sell", price, sl_price);
       double volume = CalculateLotFromUSD(sltp_value);
+      if (sl_price <= price || tp_price >= price) {
+         Print("❌ SELL invalid SL/TP direction");
+         return;
+      }
+      PrintFormat("SELL debug: price=%.2f sl=%.2f tp=%.2f minStop=%.2f",
+            price, sl_price, tp_price, SymbolInfoInteger(SYMBOL, SYMBOL_TRADE_STOPS_LEVEL) * _Point);
+
       trade.SetDeviationInPoints(30);
       trade.Sell(volume, SYMBOL, price, sl_price, tp_price, "AutoSell");
       
